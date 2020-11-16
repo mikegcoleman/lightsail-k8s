@@ -13,7 +13,7 @@ for i in `seq 1 3`; do
     --instance-names kube-$i \
     --availability-zone us-west-2a \
     --blueprint-id ubuntu_16_04_2 \
-    --bundle-id micro_2_0 \
+    --bundle-id medium_2_0 \
     --key-pair universal-key \
     --user-data "$(cat ./install-prereqs.sh)"
 done
@@ -44,8 +44,9 @@ ssh -q -i $KEY ubuntu@$MASTER_PUB_IP mkdir -p $HOME/.kube
 ssh -q -i $KEY ubuntu@$MASTER_PUB_IP sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 ssh -q -i $KEY ubuntu@$MASTER_PUB_IP sudo chown 1000:1000 $HOME/.kube/config
 
+ssh -q -i $KEY ubuntu@$MASTER_PUB_IP wget https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+ssh -q -i $KEY ubuntu@$MASTER_PUB_IP kubectl apply -f ~/kube-flannel.yml
 
-ssh -q -i $KEY ubuntu@$MASTER_PUB_IP kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/bc79dd1505b0c8681ece4de4c0d86c5cd2643275/Documentation/kube-flannel.yml
 
 echo "Joining 1st worker (IP: " $WORKER_1_PUB_IP ")"
 echo "++++++++++++++++++"
